@@ -1,22 +1,21 @@
 #include <iostream>
 #include <cstdlib>
 #include <sys/types.h>
-#include <sys/wait.h>
+#include <sys/wait.h>    //  必须包含此头文件，否则与wait共用体冲突
 #include <unistd.h>
 using namespace std;
-int spawn(char* program,char** args);
-int main(int argc, char const *argv[]) {
-  char* args[]={"ls","-l","/",NULL};
-  spawn("ls",args);
+int spawn( char * program, char ** args );
+int main ()
+{
+  char * arg_list[] = { "ls", "-l", "/", NULL };
+  spawn( "ls", arg_list );
   int child_status;
-  wait(&child_status);//等待子进程结束
-  if (WIFEXITED(child_status)) {
-    std::cout << "abort normally" << std::endl;
-  }
-  else {
-    std::cout << "abort abnormally" << std::endl;
-  }
-  cout <<"Done!"<<endl;
+  wait( &child_status );    //  等待子进程结束
+  if( WIFEXITED( child_status ) )    //  判断子进程是否正常退出
+    cout << "Exited normally with " << WEXITSTATUS(child_status) <<endl;
+  else
+    cout << "Exited abnormally." << endl;
+  cout << "Done!\n";
   return 0;
 }
 int spawn( char * program, char ** args )
